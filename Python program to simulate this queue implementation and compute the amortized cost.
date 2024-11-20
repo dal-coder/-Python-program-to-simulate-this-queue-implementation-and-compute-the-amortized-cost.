@@ -1,0 +1,42 @@
+class Queue:
+    def __init__(self):
+        self.queue = []
+        self.credit = 0
+
+    def enqueue(self, item):
+        self.queue.append(item)
+        self.credit += 2
+        return 3  # Amortized cost
+
+    def dequeue(self):
+        if not self.queue:
+            return None
+        self.credit += 2
+        return self.queue.pop(0), 3  # Amortized cost
+
+    def reorganize(self):
+        self.queue = sorted(self.queue)  # Simple reorganization
+        self.credit -= len(self.queue)
+        return 0  # Amortized cost
+
+def simulate_queue(operations):
+    queue = Queue()
+    total_amortized_cost = 0
+
+    for operation in operations:
+        if operation == "enqueue":
+            cost = queue.enqueue(len(queue))
+            total_amortized_cost += cost
+        elif operation == "dequeue":
+            item, cost = queue.dequeue()
+            total_amortized_cost += cost
+        elif operation == "reorganize":
+            cost = queue.reorganize()
+            total_amortized_cost += cost
+
+    return total_amortized_cost
+
+# Example usage:
+operations = ["enqueue", "enqueue", "enqueue", "dequeue", "enqueue", "move-to-front", "dequeue", "dequeue", "enqueue", "reorganize"]
+total_cost = simulate_queue(operations)
+print("Total amortized cost:", total_cost)
